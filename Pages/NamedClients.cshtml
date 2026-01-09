@@ -1,0 +1,110 @@
+@page
+@model NamedClientsModel
+@{
+    ViewData["Title"] = "Named Clients";
+}
+
+<div class="container mt-4">
+    <h2>Named Clients</h2>
+    <p class="lead">Demonstrates IDeliveryClientFactory for managing multiple client instances (production vs preview).</p>
+
+    <div class="card mb-3">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Configuration Code</h5>
+        </div>
+        <div class="card-body">
+            <pre><code>// In Program.cs - Register named clients
+services.AddDeliveryClient("production", options =>
+{
+    options.EnvironmentId = "your-environment-id";
+    options.UsePreviewApi = false;
+});
+
+services.AddDeliveryClient("preview", options =>
+{
+    options.EnvironmentId = "your-environment-id";
+    options.UsePreviewApi = true;
+    options.PreviewApiKey = "your-preview-key";
+});
+
+// In page model - Use factory to get named clients
+var factory = serviceProvider.GetRequiredService&lt;IDeliveryClientFactory&gt;();
+var productionClient = factory.Get("production");
+var previewClient = factory.Get("preview");</code></pre>
+        </div>
+    </div>
+
+    @if (Model.ProductionSuccess)
+    {
+        <div class="card mb-3">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Production Client</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Item:</strong> @Model.ProductionItem!.System.Name</p>
+                <p><strong>Type:</strong> <code>@Model.ProductionItem.System.Type</code></p>
+                <p><strong>Codename:</strong> <code>@Model.ProductionItem.System.Codename</code></p>
+                <p><strong>Last Modified:</strong> @Model.ProductionItem.System.LastModified</p>
+                <p class="text-muted mb-0">Retrieved from production Delivery API (published content only).</p>
+            </div>
+        </div>
+    }
+
+    @if (Model.PreviewSuccess)
+    {
+        <div class="card mb-3">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">Preview Client</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Item:</strong> @Model.PreviewItem!.System.Name</p>
+                <p><strong>Type:</strong> <code>@Model.PreviewItem.System.Type</code></p>
+                <p><strong>Codename:</strong> <code>@Model.PreviewItem.System.Codename</code></p>
+                <p><strong>Last Modified:</strong> @Model.PreviewItem.System.LastModified</p>
+                <p class="text-muted mb-0">Retrieved from Preview API (includes unpublished content).</p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <strong>Preview API Note:</strong> Preview API key is not configured. Using production client for both calls.
+        </div>
+    }
+
+    @if (Model.DefaultSuccess)
+    {
+        <div class="card mb-3">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Default Client (via IDeliveryClient)</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Item:</strong> @Model.DefaultItem!.System.Name</p>
+                <p><strong>Type:</strong> <code>@Model.DefaultItem.System.Type</code></p>
+                <p class="text-muted mb-0">Retrieved using the default IDeliveryClient (not factory).</p>
+            </div>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            <strong>Error:</strong> @Model.ErrorMessage
+        </div>
+    }
+
+    <div class="card mt-3">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Use Cases for Named Clients</h5>
+        </div>
+        <div class="card-body">
+            <ul class="mb-0">
+                <li><strong>Production vs Preview:</strong> Switch between published and draft content</li>
+                <li><strong>Multi-Environment:</strong> Different Kontent.ai projects (dev, staging, production)</li>
+                <li><strong>Multi-Tenant:</strong> Multiple customer projects in a single application</li>
+                <li><strong>A/B Testing:</strong> Different content configurations</li>
+                <li><strong>Region-Specific:</strong> Different environments per geographic region</li>
+            </ul>
+        </div>
+    </div>
+</div>

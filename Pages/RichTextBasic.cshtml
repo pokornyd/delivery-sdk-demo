@@ -1,0 +1,79 @@
+@page
+@model RichTextBasicModel
+@{
+    ViewData["Title"] = "Rich Text - Basic Resolution";
+}
+
+<div class="container mt-4">
+    <h2>Rich Text - Basic Resolution</h2>
+    <p class="lead">Demonstrates basic HTML rendering using ToHtmlAsync() with default resolvers.</p>
+
+    <div class="card mb-3">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Query Code</h5>
+        </div>
+        <div class="card-body">
+            <pre><code>var result = await _client.GetItem&lt;Article&gt;("@Model.Codename")
+    .Depth(1)
+    .ExecuteAsync();
+
+if (result.IsSuccess && result.Value.BodyCopy != null)
+{
+    var html = await result.Value.BodyCopy.ToHtmlAsync();
+}</code></pre>
+        </div>
+    </div>
+
+    @if (Model.IsSuccess)
+    {
+        <div class="alert alert-success">
+            <strong>Success!</strong> Retrieved article in @Model.ExecutionTime.TotalMilliseconds ms
+        </div>
+
+        @if (Model.Article != null)
+        {
+            <div class="card mb-3">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Article: @Model.Article.Title</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Summary:</strong> @Model.Article.Summary</p>
+                    <p><strong>Post Date:</strong> @Model.Article.PostDate?.ToString("MMMM dd, yyyy")</p>
+                </div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.HtmlContent))
+            {
+                <div class="card">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0">Rendered HTML Content</h5>
+                    </div>
+                    <div class="card-body">
+                        @Html.Raw(Model.HtmlContent)
+                    </div>
+                </div>
+
+                <div class="card mt-3">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Raw HTML</h5>
+                    </div>
+                    <div class="card-body">
+                        <pre><code>@Model.HtmlContent</code></pre>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    This article does not have rich text content.
+                </div>
+            }
+        }
+    }
+    else if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            <strong>Error:</strong> @Model.ErrorMessage
+        </div>
+    }
+</div>

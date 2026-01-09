@@ -1,0 +1,82 @@
+@page
+@model MultipleItemsModel
+@{
+    ViewData["Title"] = "Get Multiple Items";
+}
+
+<div class="container mt-4">
+    <h2>Get Multiple Items</h2>
+    <p class="lead">Demonstrates GetItems() with Skip, Limit, and pagination parameters.</p>
+
+    <div class="card mb-3">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Query Code</h5>
+        </div>
+        <div class="card-body">
+            <pre><code>var result = await _client.GetItems()
+    .Where(f => f.System("type").IsEqualTo("article"))
+    .OrderBy("system.last_modified", OrderingMode.Descending)
+    .Skip(@Model.Skip)
+    .Limit(@Model.Limit)
+    .WithTotalCount()
+    .ExecuteAsync();</code></pre>
+        </div>
+    </div>
+
+    @if (Model.IsSuccess)
+    {
+        <div class="alert alert-success">
+            <strong>Success!</strong> Retrieved @Model.Items!.Count items in @Model.ExecutionTime.TotalMilliseconds ms
+        </div>
+
+        @if (Model.TotalCount.HasValue)
+        {
+            <div class="alert alert-info">
+                <strong>Total Count:</strong> @Model.TotalCount items match this query (showing @Model.Items.Count)
+            </div>
+        }
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Retrieved Items</h5>
+            </div>
+            <div class="list-group list-group-flush">
+                @foreach (var item in Model.Items)
+                {
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">@item.System.Name</h6>
+                            <small class="text-muted">@item.System.LastModified.ToString("yyyy-MM-dd HH:mm")</small>
+                        </div>
+                        <p class="mb-1">
+                            <strong>Type:</strong> <code>@item.System.Type</code> |
+                            <strong>Codename:</strong> <code>@item.System.Codename</code> |
+                            <strong>Language:</strong> <code>@item.System.Language</code>
+                        </p>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between mt-3">
+            <div>
+                @if (Model.Skip > 0)
+                {
+                    <a href="?skip=@Math.Max(0, Model.Skip - Model.Limit)&limit=@Model.Limit" class="btn btn-primary">Previous</a>
+                }
+            </div>
+            <div>
+                @if (Model.TotalCount.HasValue && Model.Skip + Model.Limit < Model.TotalCount)
+                {
+                    <a href="?skip=@(Model.Skip + Model.Limit)&limit=@Model.Limit" class="btn btn-primary">Next</a>
+                }
+            </div>
+        </div>
+    }
+    else if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            <strong>Error:</strong> @Model.ErrorMessage
+        </div>
+    }
+</div>

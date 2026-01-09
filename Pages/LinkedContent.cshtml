@@ -1,0 +1,83 @@
+@page
+@model LinkedContentModel
+@{
+    ViewData["Title"] = "Linked Content";
+}
+
+<div class="container mt-4">
+    <h2>Linked Content & Depth Parameter</h2>
+    <p class="lead">Demonstrates retrieving nested/linked content using the Depth parameter.</p>
+
+    <div class="card mb-3">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Query Code</h5>
+        </div>
+        <div class="card-body">
+            <pre><code>// Depth 0 (default) - no linked items
+var depth0 = await _client.GetItem("@Model.Codename")
+    .Depth(0)
+    .ExecuteAsync();
+
+// Depth 1 - first level of linked items
+var depth1 = await _client.GetItem("@Model.Codename")
+    .Depth(1)
+    .ExecuteAsync();
+
+// Depth 2 - two levels of linked items
+var depth2 = await _client.GetItem("@Model.Codename")
+    .Depth(2)
+    .ExecuteAsync();</code></pre>
+        </div>
+    </div>
+
+    @if (Model.Depth0Success)
+    {
+        <div class="card mb-3">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">Depth 0 (Default - No Linked Items)</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Item:</strong> @Model.Depth0Item!.System.Name</p>
+                <p><strong>Type:</strong> <code>@Model.Depth0Item.System.Type</code></p>
+                <p class="text-muted">Linked items are not populated at depth 0.</p>
+            </div>
+        </div>
+    }
+
+    @if (Model.Depth1Success)
+    {
+        <div class="card mb-3">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Depth 1 (First Level of Linked Items)</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Item:</strong> @Model.Depth1Item!.System.Name</p>
+                <p class="text-muted">Linked items are accessible through modular content elements at depth 1.</p>
+            </div>
+        </div>
+    }
+
+    @if (Model.Depth2Success)
+    {
+        <div class="card mb-3">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Depth 2 (Two Levels of Linked Items)</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Item:</strong> @Model.Depth2Item!.System.Name</p>
+                <p class="text-muted">Linked items and their linked items are populated through modular content elements.</p>
+            </div>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            <strong>Error:</strong> @Model.ErrorMessage
+        </div>
+    }
+
+    <div class="alert alert-warning">
+        <strong>Note:</strong> Higher depth values increase response size and processing time. Only use higher depth when necessary.
+    </div>
+</div>

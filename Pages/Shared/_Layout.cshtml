@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Kontent.ai SDK Beta Validation</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/DeliveryDemo.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-page="/Index">Kontent.ai SDK Beta</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Dashboard</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarBasic" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Basic Operations
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarBasic">
+                                <li><a class="dropdown-item" asp-page="/SingleItem">Get Single Item</a></li>
+                                <li><a class="dropdown-item" asp-page="/MultipleItems">Get Multiple Items</a></li>
+                                <li><a class="dropdown-item" asp-page="/ItemsFeed">Items Feed</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarFiltering" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Filtering
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarFiltering">
+                                <li><a class="dropdown-item" asp-page="/BasicFiltering">Basic Filters</a></li>
+                                <li><a class="dropdown-item" asp-page="/AdvancedFiltering">Advanced Filters</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarTyped" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Strongly-Typed
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarTyped">
+                                <li><a class="dropdown-item" asp-page="/TypedModels">Typed Models</a></li>
+                                <li><a class="dropdown-item" asp-page="/LinkedContent">Linked Content</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarRichText" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Rich Text
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarRichText">
+                                <li><a class="dropdown-item" asp-page="/RichTextBasic">Basic Resolution</a></li>
+                                <li><a class="dropdown-item" asp-page="/RichTextCustom">Custom Resolvers</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarAdvanced" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Advanced
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarAdvanced">
+                                <li><a class="dropdown-item" asp-page="/MultiLanguage">Multi-Language</a></li>
+                                <li><a class="dropdown-item" asp-page="/Caching">Caching</a></li>
+                                <li><a class="dropdown-item" asp-page="/NamedClients">Named Clients</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2025 - Kontent.ai Delivery SDK Beta Validation Demo
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

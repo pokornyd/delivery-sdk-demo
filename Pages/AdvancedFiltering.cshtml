@@ -1,0 +1,79 @@
+@page
+@model AdvancedFilteringModel
+@{
+    ViewData["Title"] = "Advanced Filtering";
+}
+
+<div class="container mt-4">
+    <h2>Advanced Filtering</h2>
+    <p class="lead">Demonstrates Range, OrderBy, and WithTotalCount() for advanced querying scenarios.</p>
+
+    <div class="card mb-3">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Query Code</h5>
+        </div>
+        <div class="card-body">
+            <pre><code>var result = await _client.GetItems()
+    .Where(f => f.System("type").IsEqualTo("article"))
+    .OrderBy("system.last_modified", OrderingMode.Descending)
+    .Limit(5)
+    .WithTotalCount()
+    .ExecuteAsync();</code></pre>
+        </div>
+    </div>
+
+    @if (Model.IsSuccess)
+    {
+        <div class="alert alert-success">
+            <strong>Success!</strong> Retrieved @Model.Items!.Count items in @Model.ExecutionTime.TotalMilliseconds ms
+        </div>
+
+        @if (Model.TotalCount.HasValue)
+        {
+            <div class="alert alert-info">
+                <strong>Total Count:</strong> @Model.TotalCount items of type "article" in the project
+            </div>
+        }
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Items Ordered by Last Modified (Descending)</h5>
+            </div>
+            <div class="list-group list-group-flush">
+                @foreach (var item in Model.Items)
+                {
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">@item.System.Name</h6>
+                            <small class="text-muted">@item.System.LastModified.ToString("yyyy-MM-dd HH:mm:ss")</small>
+                        </div>
+                        <p class="mb-1">
+                            <strong>Codename:</strong> <code>@item.System.Codename</code>
+                        </p>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Advanced Query Features</h5>
+            </div>
+            <div class="card-body">
+                <ul>
+                    <li><strong>OrderBy:</strong> <code>.OrderBy("system.last_modified", OrderingMode.Descending)</code></li>
+                    <li><strong>WithTotalCount:</strong> <code>.WithTotalCount()</code> - Returns total number of matching items</li>
+                    <li><strong>Skip/Limit:</strong> <code>.Skip(10).Limit(20)</code> - Pagination control</li>
+                    <li><strong>Depth:</strong> <code>.Depth(2)</code> - Controls linked content nesting level</li>
+                    <li><strong>WithLanguage:</strong> <code>.WithLanguage("es-ES")</code> - Language variant selection</li>
+                </ul>
+            </div>
+        </div>
+    }
+    else if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            <strong>Error:</strong> @Model.ErrorMessage
+        </div>
+    }
+</div>

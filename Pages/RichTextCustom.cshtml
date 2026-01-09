@@ -1,0 +1,115 @@
+@page
+@model RichTextCustomModel
+@{
+    ViewData["Title"] = "Rich Text - Custom Resolvers";
+}
+
+<div class="container mt-4">
+    <h2>Rich Text - Custom Resolvers</h2>
+    <p class="lead">Demonstrates custom link resolution and inline content resolution using HtmlResolverBuilder.</p>
+
+    <div class="card mb-3">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Query Code</h5>
+        </div>
+        <div class="card-body">
+            <pre><code>// Build custom resolver
+var resolver = new HtmlResolverBuilder()
+    .WithContentItemLinkResolver("article", (link, _) =>
+    {
+        var url = $"/articles/{link.Metadata?.UrlSlug ?? link.ItemCodename}";
+        return ValueTask.FromResult($"&lt;a href=\"{url}\" class=\"article-link\">{link.Text}&lt;/a>");
+    })
+    .WithContentResolver("tweet", content =>
+    {
+        var codename = content.ItemCodename;
+        return $"&lt;div class=\"tweet-embed\">&lt;blockquote>Tweet: {codename}&lt;/blockquote>&lt;/div>";
+    })
+    .WithContentResolver("hosted_video", content =>
+    {
+        var codename = content.ItemCodename;
+        return $"&lt;div class=\"video-wrapper\">Video: {codename}&lt;/div>";
+    })
+    .Build();
+
+// Use custom resolver
+var html = await article.BodyCopy.ToHtmlAsync(resolver);</code></pre>
+        </div>
+    </div>
+
+    @if (Model.IsSuccess)
+    {
+        <div class="alert alert-success">
+            <strong>Success!</strong> Retrieved article in @Model.ExecutionTime.TotalMilliseconds ms
+        </div>
+
+        @if (Model.Article != null)
+        {
+            <div class="card mb-3">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Article: @Model.Article.Title</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Summary:</strong> @Model.Article.Summary</p>
+                </div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.CustomResolvedHtml))
+            {
+                <div class="card mb-3">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0">Rendered with Custom Resolvers</h5>
+                    </div>
+                    <div class="card-body">
+                        @Html.Raw(Model.CustomResolvedHtml)
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Raw HTML (Custom Resolvers)</h5>
+                    </div>
+                    <div class="card-body">
+                        <pre style="max-height: 400px; overflow-y: auto;"><code>@Model.CustomResolvedHtml</code></pre>
+                    </div>
+                </div>
+            }
+
+            <div class="alert alert-info mt-3">
+                <strong>Custom Resolutions Applied:</strong>
+                <ul class="mb-0">
+                    <li>Article links → Custom URL pattern with CSS class</li>
+                    <li>Tweet embeds → Custom blockquote styling</li>
+                    <li>Hosted videos → Custom video wrapper</li>
+                </ul>
+            </div>
+        }
+    }
+    else if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            <strong>Error:</strong> @Model.ErrorMessage
+        </div>
+    }
+</div>
+
+<style>
+    .article-link {
+        color: #0066cc;
+        font-weight: bold;
+        text-decoration: underline;
+    }
+    .tweet-embed {
+        border-left: 4px solid #1da1f2;
+        padding: 15px;
+        margin: 10px 0;
+        background-color: #f7f9fa;
+    }
+    .video-wrapper {
+        border: 2px solid #ff0000;
+        padding: 20px;
+        margin: 10px 0;
+        background-color: #f0f0f0;
+        text-align: center;
+    }
+</style>

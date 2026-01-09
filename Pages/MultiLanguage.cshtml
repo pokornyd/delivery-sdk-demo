@@ -1,0 +1,95 @@
+@page
+@model MultiLanguageModel
+@{
+    ViewData["Title"] = "Multi-Language Support";
+}
+
+<div class="container mt-4">
+    <h2>Multi-Language Support</h2>
+    <p class="lead">Demonstrates WithLanguage() for retrieving content in specific language variants.</p>
+
+    <div class="card mb-3">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Query Code</h5>
+        </div>
+        <div class="card-body">
+            <pre><code>// Get available languages
+var languagesResult = await _client.GetLanguages().ExecuteAsync();
+
+// Get content in Spanish
+var esResult = await _client.GetItem("homepage")
+    .WithLanguage("es-ES")
+    .ExecuteAsync();
+
+// Get content in English (default)
+var enResult = await _client.GetItem("homepage")
+    .WithLanguage("en-US")
+    .ExecuteAsync();</code></pre>
+        </div>
+    </div>
+
+    @if (Model.LanguagesSuccess && Model.Languages != null)
+    {
+        <div class="card mb-3">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Available Languages</h5>
+            </div>
+            <div class="list-group list-group-flush">
+                @foreach (var language in Model.Languages)
+                {
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">@language.System.Name</h6>
+                            <span class="badge bg-primary">@language.System.Codename</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    @if (Model.EnglishSuccess && Model.EnglishItem != null)
+    {
+        <div class="card mb-3">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">English (Default)</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Name:</strong> @Model.EnglishItem.System.Name</p>
+                <p><strong>Language:</strong> <code>@Model.EnglishItem.System.Language</code></p>
+                <p><strong>Type:</strong> <code>@Model.EnglishItem.System.Type</code></p>
+            </div>
+        </div>
+    }
+
+    @if (Model.SpanishSuccess && Model.SpanishItem != null)
+    {
+        <div class="card mb-3">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">Spanish Variant</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Name:</strong> @Model.SpanishItem.System.Name</p>
+                <p><strong>Language:</strong> <code>@Model.SpanishItem.System.Language</code></p>
+                <p><strong>Type:</strong> <code>@Model.SpanishItem.System.Type</code></p>
+            </div>
+        </div>
+    }
+    else if (Model.LanguagesSuccess)
+    {
+        <div class="alert alert-info">
+            Spanish variant may not be available for this item. Language fallbacks are configured in Kontent.ai.
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            <strong>Error:</strong> @Model.ErrorMessage
+        </div>
+    }
+
+    <div class="alert alert-info mt-3">
+        <strong>Note:</strong> Language fallbacks are configured in Kontent.ai project settings. If content is not available in the requested language, the SDK returns content according to your fallback configuration.
+    </div>
+</div>

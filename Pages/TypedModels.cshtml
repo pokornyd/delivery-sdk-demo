@@ -1,0 +1,94 @@
+@page
+@model TypedModelsPageModel
+@{
+    ViewData["Title"] = "Strongly-Typed Models";
+}
+
+<div class="container mt-4">
+    <h2>Strongly-Typed Models</h2>
+    <p class="lead">Demonstrates using strongly-typed models (Article, Coffee) with compile-time type safety.</p>
+
+    <div class="card mb-3">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Query Code</h5>
+        </div>
+        <div class="card-body">
+            <pre><code>// Get articles with strong typing
+var articlesResult = await _client.GetItems&lt;Article&gt;()
+    .Where(f => f.System("type").IsEqualTo("article"))
+    .Limit(3)
+    .ExecuteAsync();
+
+// Get coffee products with strong typing
+var coffeesResult = await _client.GetItems&lt;Coffee&gt;()
+    .Where(f => f.System("type").IsEqualTo("coffee"))
+    .Limit(3)
+    .ExecuteAsync();</code></pre>
+        </div>
+    </div>
+
+    @if (Model.ArticlesSuccess)
+    {
+        <div class="card mb-3">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Articles (Strongly-Typed)</h5>
+            </div>
+            <div class="list-group list-group-flush">
+                @foreach (var article in Model.Articles!)
+                {
+                    <div class="list-group-item">
+                        <h6 class="mb-1">@article.Elements.Title</h6>
+                        <p class="mb-1">
+                            <strong>Summary:</strong> @(article.Elements.Summary ?? "N/A")
+                        </p>
+                        <p class="mb-1">
+                            <strong>Post Date:</strong> @(article.Elements.PostDate?.ToString("yyyy-MM-dd") ?? "N/A")
+                        </p>
+                        <small class="text-muted">
+                            Has Rich Text: @(article.Elements.BodyCopy != null ? "Yes" : "No") |
+                            Related Articles: @(article.Elements.RelatedArticles?.Count() ?? 0)
+                        </small>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    @if (Model.CoffeesSuccess)
+    {
+        <div class="card mb-3">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">Coffee Products (Strongly-Typed)</h5>
+            </div>
+            <div class="list-group list-group-flush">
+                @foreach (var coffee in Model.Coffees!)
+                {
+                    <div class="list-group-item">
+                        <h6 class="mb-1">@coffee.Elements.ProductName</h6>
+                        <p class="mb-1">
+                            <strong>Price:</strong> @(coffee.Elements.Price?.ToString("C") ?? "N/A") |
+                            <strong>Country:</strong> @(coffee.Elements.Country ?? "N/A")
+                        </p>
+                        <p class="mb-1">
+                            <strong>Description:</strong> @(coffee.Elements.ShortDescription ?? "N/A")
+                        </p>
+                        <small class="text-muted">
+                            Processing: @(coffee.Elements.Processing != null ? string.Join(", ", coffee.Elements.Processing.Select(p => p.Name)) : "N/A")
+                        </small>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            <strong>Error:</strong> @Model.ErrorMessage
+        </div>
+    }
+
+    <div class="alert alert-success">
+        <strong>Execution Time:</strong> Articles: @Model.ArticlesTime.TotalMilliseconds ms | Coffee: @Model.CoffeesTime.TotalMilliseconds ms
+    </div>
+</div>

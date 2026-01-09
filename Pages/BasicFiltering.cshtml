@@ -1,0 +1,80 @@
+@page
+@model BasicFilteringModel
+@{
+    ViewData["Title"] = "Basic Filtering";
+}
+
+<div class="container mt-4">
+    <h2>Basic Filtering</h2>
+    <p class="lead">Demonstrates type-safe filtering with Equals, NotEquals, Contains, and In operators.</p>
+
+    <div class="card mb-3">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Query Code</h5>
+        </div>
+        <div class="card-body">
+            <pre><code>var result = await _client.GetItems()
+    .Where(f => f
+        .System("type").IsEqualTo("article")
+        .Element("title").Contains("coffee"))
+    .Limit(10)
+    .ExecuteAsync();</code></pre>
+        </div>
+    </div>
+
+    @if (Model.IsSuccess)
+    {
+        <div class="alert alert-success">
+            <strong>Success!</strong> Retrieved @Model.Items!.Count items in @Model.ExecutionTime.TotalMilliseconds ms
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Filtered Items (Type = "article", Title contains "coffee")</h5>
+            </div>
+            <div class="list-group list-group-flush">
+                @if (Model.Items.Any())
+                {
+                    @foreach (var item in Model.Items)
+                    {
+                        <div class="list-group-item">
+                            <h6 class="mb-1">@item.System.Name</h6>
+                            <p class="mb-1">
+                                <strong>Type:</strong> <code>@item.System.Type</code> |
+                                <strong>Codename:</strong> <code>@item.System.Codename</code>
+                            </p>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="list-group-item">
+                        <p class="mb-0 text-muted">No items found matching the filter criteria.</p>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Supported Filter Operators</h5>
+            </div>
+            <div class="card-body">
+                <ul>
+                    <li><code>IsEqualTo</code> - Exact match: <code>f.System("type").IsEqualTo("article")</code></li>
+                    <li><code>IsNotEqualTo</code> - Not equal: <code>f.System("type").IsNotEqualTo("article")</code></li>
+                    <li><code>Contains</code> - Text contains: <code>f.Element("title").Contains("coffee")</code></li>
+                    <li><code>IsIn</code> - Value in array: <code>f.System("type").IsIn("article", "coffee")</code></li>
+                    <li><code>ContainsAny</code> - Multi-value element contains any: <code>f.Element("tags").ContainsAny("val1", "val2")</code></li>
+                    <li><code>ContainsAll</code> - Multi-value element contains all: <code>f.Element("tags").ContainsAll("val1", "val2")</code></li>
+                </ul>
+            </div>
+        </div>
+    }
+    else if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            <strong>Error:</strong> @Model.ErrorMessage
+        </div>
+    }
+</div>

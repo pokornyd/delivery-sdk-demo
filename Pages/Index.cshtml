@@ -1,0 +1,120 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "SDK Feature Dashboard";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="display-4">Kontent.ai Delivery SDK Beta Validation</h1>
+            <p class="lead">Testing all key features before beta release</p>
+            <hr />
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Basic Operations</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="/SingleItem" class="list-group-item list-group-item-action">
+                        <strong>Get Single Item</strong>
+                        <small class="d-block text-muted">GetItem() - Retrieve a single content item by codename</small>
+                    </a>
+                    <a href="/MultipleItems" class="list-group-item list-group-item-action">
+                        <strong>Get Multiple Items</strong>
+                        <small class="d-block text-muted">GetItems() with Skip, Limit, and pagination</small>
+                    </a>
+                    <a href="/ItemsFeed" class="list-group-item list-group-item-action">
+                        <strong>Items Feed</strong>
+                        <small class="d-block text-muted">GetItemsFeed() - Async enumerable for large datasets</small>
+                    </a>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Filtering & Querying</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="/BasicFiltering" class="list-group-item list-group-item-action">
+                        <strong>Basic Filters</strong>
+                        <small class="d-block text-muted">Equals, NotEquals, Contains, In</small>
+                    </a>
+                    <a href="/AdvancedFiltering" class="list-group-item list-group-item-action">
+                        <strong>Advanced Filters</strong>
+                        <small class="d-block text-muted">Range, OrderBy, WithTotalCount</small>
+                    </a>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Strongly-Typed Models</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="/TypedModels" class="list-group-item list-group-item-action">
+                        <strong>Typed Models</strong>
+                        <small class="d-block text-muted">Using Article, Coffee models with type safety</small>
+                    </a>
+                    <a href="/LinkedContent" class="list-group-item list-group-item-action">
+                        <strong>Linked Content</strong>
+                        <small class="d-block text-muted">Depth parameter and nested content retrieval</small>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">Rich Text Resolution</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="/RichTextBasic" class="list-group-item list-group-item-action">
+                        <strong>Basic Resolution</strong>
+                        <small class="d-block text-muted">ToHtmlAsync() with default resolvers</small>
+                    </a>
+                    <a href="/RichTextCustom" class="list-group-item list-group-item-action">
+                        <strong>Custom Resolvers</strong>
+                        <small class="d-block text-muted">Custom link and inline content resolution</small>
+                    </a>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Advanced Features</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="/MultiLanguage" class="list-group-item list-group-item-action">
+                        <strong>Multi-Language</strong>
+                        <small class="d-block text-muted">WithLanguage() and GetLanguages()</small>
+                    </a>
+                    <a href="/Caching" class="list-group-item list-group-item-action">
+                        <strong>Caching</strong>
+                        <small class="d-block text-muted">Memory cache with hit/miss tracking</small>
+                    </a>
+                    <a href="/NamedClients" class="list-group-item list-group-item-action">
+                        <strong>Named Clients</strong>
+                        <small class="d-block text-muted">IDeliveryClientFactory for multiple clients</small>
+                    </a>
+                </div>
+            </div>
+
+            <div class="card mb-3 border-primary">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Configuration</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2"><strong>Environment ID:</strong> <code>975bf280-fd91-488c-994c-2f04416e5ee3</code></p>
+                    <p class="mb-2"><strong>Project:</strong> Sample Coffee Shop</p>
+                    <p class="mb-0"><strong>Cache:</strong> Memory (5 min expiration)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
